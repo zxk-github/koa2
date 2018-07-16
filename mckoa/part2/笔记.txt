@@ -1,0 +1,40 @@
+2-1 
+generator function 核心是 generator(生成器) 生成器本质是迭代器
+
+迭代器并不是某一个语法，它是一种协议，遵循了这样的一个协议实现的都被称为迭代器对象
+
+自定义一个迭代器
+function makeGenerator(arr){
+  let arrIndex = 0;
+  return {
+    next() {
+      if(arrIndex < arr.length) {
+        return {
+          value: arr[arrIndex++],
+          done: false
+        }
+      } else {
+        return {
+          value: undefined,
+          done: true
+        }
+      }
+    }
+  }
+}
+迭代器每一次迭代的值都和上一次迭代的值都是有关系的，是上一次即将执行的链路，每一次迭代都反应了被迭代对象内部的某一个状态，这些状态的组合是一个完整的状态流程，通过next()方法获取到某个状态的值，通过next()方法，总能拿到一个对象，value是其中执行一次之后的结果，done表示当前这个迭代器是否迭代完成
+
+生成器
+生成器就是生成一个可以返回迭代的一个函数，本质上还是在操作迭代器，只不过是借助于生成器函数来完成这件事情
+
+generator function 就是一个迭代器函数生成器
+generator function 只是普通函数多了一个*，并且每次迭代都是通过yield进行调用
+
+function *makeGenerator(arr){
+  for(let i = 0; i < arr.length; i++){
+    yield arr[i];
+  }
+}
+const gt = makeGenerator(['1', '2', '3'])
+
+生成器的出现主要就是为了简化我们自定义迭代器的一个过程，生成器就是为了简化创建迭代器出现的
