@@ -1,4 +1,4 @@
-2-1 
+2-1 generator 函数
 generator function 核心是 generator(生成器) 生成器本质是迭代器
 
 迭代器并不是某一个语法，它是一种协议，遵循了这样的一个协议实现的都被称为迭代器对象
@@ -38,3 +38,38 @@ function *makeGenerator(arr){
 const gt = makeGenerator(['1', '2', '3'])
 
 生成器的出现主要就是为了简化我们自定义迭代器的一个过程，生成器就是为了简化创建迭代器出现的
+
+2-2 co库
+
+co本身是一个function,试图把所有传入的值(数组，对象，generator, 函数)都转换成promise,
+
+const co = require('co');
+const fetch = require('node-fetch');
+co(function *() {
+  const res = yield fetch('http://api.douban.com/v2/movie/1291843');
+  const movie = yield res.json();
+  const id = movie.id;
+  console.log('id', movie)
+})
+
+// 通过yield来执行一些异步请求
+yield一个状态，或者称为进程的暂停，fetch返回的是一个promise, 通过yield拿到了fetch执行之后返回的结果，co这个库让每一个yield都能自动执行，实现了generator函数的自动执行
+
+function run (generator) {
+  const iterator = generator();
+  const it = iterator.next();
+  const promise = it.value;
+
+  promise.then(data => {
+    const it2 = iterator.next(data);
+    const promise2 = it2.value;
+    promise2.then((data2) => {
+      iterator.next(data2);
+    })
+  })
+}
+
+2-3 箭头函数
+ 
+2-4 async/await
+
